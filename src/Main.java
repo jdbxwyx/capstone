@@ -285,6 +285,10 @@ public class Main {
 
 	public static void main(String[] argv) throws IOException, InterruptedException
 	{
+		// build connection between multiple machines
+		MultiMachineSocket mms = new MultiMachineSocket();
+		mms.config();
+		mms.connect();
 		
 		long startTime = System.currentTimeMillis();
 		
