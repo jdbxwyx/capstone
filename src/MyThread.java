@@ -9,14 +9,18 @@ import com.google.common.collect.Multimap;
 
 public class MyThread implements Runnable{
 	private int MyCount;
+	private int globalCount;
+	private int machineId;
 	private int[][] initialPopulation;
 	private TopicModelling tm;
 	private int numberOfDocuments;
 	private double[] fitnessValues;
 	
 	
-	public MyThread(int count, int[][] initialPopulation, TopicModelling tm, int numberOfDocuments, double[] fitnessValues){
+	public MyThread(int count, int numMachines, int id, int[][] initialPopulation, TopicModelling tm, int numberOfDocuments, double[] fitnessValues){
 		MyCount = count;
+		machineId = id;
+		globalCount = (numMachines + 1) * machineId + MyCount;
 		this.initialPopulation = initialPopulation;
 		this.tm = tm;
 		this.numberOfDocuments = numberOfDocuments;
@@ -27,10 +31,10 @@ public class MyThread implements Runnable{
 	public void run(){
 		try{
 			//invoke the LDA function
-			tm.LDA(initialPopulation[MyCount][0], initialPopulation[MyCount][1], false, MyCount);
+			tm.LDA(initialPopulation[globalCount][0], initialPopulation[globalCount][1], false, globalCount);
 					
 			//number of topics - the first value
-			int numberOfTopics = initialPopulation[MyCount][0];
+			int numberOfTopics = initialPopulation[globalCount][0];
 	
 			//clustermatrix - matrix explaining the distribution of documents into different topics
 			//the distibution is written to a text file by the name "distribution.txt"
@@ -39,7 +43,7 @@ public class MyThread implements Runnable{
 	
 			//reading the values from distribution.txt and populating the cluster matrix
 			int rowNumber=0, columnNumber = 0;
-			Scanner fileRead = new Scanner( new File("distribution" + MyCount + ".txt"));
+			Scanner fileRead = new Scanner( new File("distribution" + globalCount + ".txt"));
 			fileRead.nextLine();
 			
 			//Map to save the documents that belong to each cluster
@@ -150,7 +154,7 @@ public class MyThread implements Runnable{
 			for(int m = 0 ; m < (numberOfDocuments-1); m++ ) {
 				total = total + silhouetteCoefficient[m]; 
 			}
-			fitnessValues[MyCount] = total / (numberOfDocuments - 1);		
+			fitnessValues[globalCount] = total / (numberOfDocuments - 1);		
 		}
 		catch (IOException e) {
 			// TODO Auto-generated catch block

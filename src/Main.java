@@ -319,7 +319,8 @@ public class Main {
 		//this completes all LDA function 
 		//the distribution is found in distribution .text
 		//the code to write the topics to a file is still to be written.
-		geneticLogic.geneticLogic();
+		
+		geneticLogic.geneticLogic(mms.getNumSlaves() + 1, mms.getId());
 		
 		long geneticEndTime = System.currentTimeMillis();
 		System.out.println("Genetic algorithm takes " + (geneticEndTime - preprocessEndTime) + "ms");

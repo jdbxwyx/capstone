@@ -8,11 +8,17 @@ import com.google.common.collect.Multimap;
 
 public class geneticLogic {
 
+	private static int numMachines;
+	private static int machineId;
 	//public static void main(String[] args) throws IOException, InterruptedException {
-	public static void geneticLogic() throws IOException, InterruptedException {
+	public static void geneticLogic(int num, int id) throws IOException, InterruptedException {
+		numMachines = num;
+		machineId = id;
+		
 		//the initial population of size 6
 		// to make paralleling work easier, make it size = number of machines * number of cores on each machine
-		int population = 6;
+		
+		int population = numMachines * 3;
 		int[][] initialPopulation = new int[population][2];
 		
 		boolean maxFitnessFound = false;
@@ -47,10 +53,10 @@ public class geneticLogic {
 			long startTime = System.currentTimeMillis();
 		
 			int coresNum = 4;
-			int newThreadsNum = 6;
+			int newThreadsNum = 3;
 			Thread threads[] = new Thread[newThreadsNum];
 			for(int i = 0; i < newThreadsNum; i++){
-				threads[i] = new Thread( new MyThread(i, initialPopulation, tm, numberOfDocuments, fitnessValues));
+				threads[i] = new Thread( new MyThread(i, numMachines, machineId, initialPopulation, tm, numberOfDocuments, fitnessValues));
 				threads[i].start(); 
 			}
 			

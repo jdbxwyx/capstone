@@ -13,6 +13,9 @@ public class MultiMachineSocket {
 	
 	// id = -1 is master, id >= 0 are slaves 
 	private int id;
+	public int getId(){
+		return id;
+	}
 	private InetAddress slaveAddr[];
 	
 	private int port = 0;
