@@ -1,0 +1,16 @@
+<html>
+ <head> 
+ </head> 
+ <body> 
+  <script>
+var thispage = document.location.href;
+rdpage = thispage.replace(/\/the-trail\//,"/44/");
+rdpage = rdpage.replace(/_/g,"-");
+rdpage = rdpage.replace(/http:\/\//,"");
+rdbits = rdpage.split("/");
+rdnewpage = "http://" + rdbits[0] + "/" + rdbits[1] + "/" + rdbits[2] + "/"
+ + rdbits[3] + "/"  + rdbits[5];
+window.location.href = rdnewpage;
+</script>   
+ </body>
+</html>
