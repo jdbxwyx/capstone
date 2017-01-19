@@ -6,8 +6,6 @@ import java.util.Scanner;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-
-
 public class geneticLogic {
 
 	//public static void main(String[] args) throws IOException, InterruptedException {

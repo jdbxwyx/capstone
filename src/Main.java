@@ -314,6 +314,7 @@ public class Main {
 		long preprocessEndTime = System.currentTimeMillis();
 		System.out.println("Preprocessing takes " + (preprocessEndTime - startTime) + "ms");
 		
+		
 		//call the genetic logic function that calls the topic modelling
 		//this completes all LDA function 
 		//the distribution is found in distribution .text

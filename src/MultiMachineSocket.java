@@ -26,6 +26,9 @@ public class MultiMachineSocket {
 	private void setNumSlaves(String line){
 		numSlaves = Integer.parseInt(line);
 	}
+	public int getNumSlaves(){
+		return numSlaves;
+	}
 	
 	private void setId(int i){
 		id = i;
@@ -62,24 +65,34 @@ public class MultiMachineSocket {
 		for(int i = 0; i < numSlaves; i++){
 			line = b.readLine();
 			setOneSlave(i, line);
-			System.out.println("slave " + i + "address: " + line);
+			System.out.println("slave " + i + " address: " + line);
 		}
 		
 		// 4) set port(port for connection with first slave)
 		line = b.readLine();
 		setPort( Integer.parseInt(line));
+		System.out.println(" first port: " + port);
 	}
 	
 	public void connect() throws IOException{
+		System.out.println("My IP is: " + InetAddress.getLocalHost().toString());
 		// if this machine is master
     	if(masterAddr.equals(InetAddress.getByName("localhost")) || masterAddr.equals(InetAddress.getLocalHost())){
     		setId(-1);
+    		System.out.println("I am master");
     		// create serverSocket for each slave, and then listen to request from each slave
     		masterSockets = new ServerSocket[numSlaves];
     		for(int i = 0; i < numSlaves; i++){
     			masterSockets[i] = new ServerSocket(port + i);
     			Socket sockets[] = new Socket[numSlaves];
-    			sockets[i] = masterSockets[i].accept();
+    			
+    			while(true){
+    				sockets[i] = masterSockets[i].accept();
+    				System.out.println("*****tag****");
+    				if(sockets[i] != null)
+    					break;
+    				
+    			}
     			System.out.println("connection estblished " + i);
     			
     		}
@@ -92,8 +105,11 @@ public class MultiMachineSocket {
     				setId(i);
     			}
     		}
-    		Socket socket = new Socket(masterAddr, port + id - 1);
-    		System.out.println("slave " + id + "is trying to connect with master");
+    		System.out.println("I am slave " + id);
+    		System.out.println("slave " + id + "will try to connect with master");
+    		System.out.println(InetAddress.getByName("localhost").toString() + "    " + (port + id));
+    		Socket socket = new Socket(masterAddr, port + id);//!!!!!!!!!!need to close!!!!!1!!!!
+    		
     	}
 	}
 	
@@ -106,5 +122,5 @@ public class MultiMachineSocket {
 	public void sendResult(){
 		
 	}
-
+	
 }
