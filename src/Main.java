@@ -283,12 +283,11 @@ public class Main {
         
         
 
-	public static void main(String[] argv) throws IOException, InterruptedException
+	public static void main(String[] argv) throws IOException, InterruptedException, ClassNotFoundException
 	{
 		// build connection between multiple machines
 		MultiMachineSocket mms = new MultiMachineSocket();
 		mms.config();
-		mms.connect();
 		
 		long startTime = System.currentTimeMillis();
 		
@@ -320,7 +319,7 @@ public class Main {
 		//the distribution is found in distribution .text
 		//the code to write the topics to a file is still to be written.
 		
-		geneticLogic.geneticLogic(mms.getNumSlaves() + 1, mms.getId());
+		geneticLogic.geneticLogic(mms);
 		
 		long geneticEndTime = System.currentTimeMillis();
 		System.out.println("Genetic algorithm takes " + (geneticEndTime - preprocessEndTime) + "ms");

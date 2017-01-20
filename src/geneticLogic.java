@@ -1,5 +1,8 @@
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,11 +14,35 @@ public class geneticLogic {
 	private static int numMachines;
 	private static int machineId;
 	//public static void main(String[] args) throws IOException, InterruptedException {
-	public static void geneticLogic(int num, int id) throws IOException, InterruptedException {
-		numMachines = num;
-		machineId = id;
+	public static void geneticLogic(MultiMachineSocket mms) throws IOException, InterruptedException, ClassNotFoundException {
 		
-		//the initial population of size 6
+		Socket sockets[] = mms.connect();
+		numMachines = mms.getNumSlaves() + 1;
+		machineId = mms.getId();
+		
+		//test!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//is master
+		if(machineId == -1){
+			ObjectInputStream input = null;
+			for(int i = 0; i < numMachines - 1; i++){
+				input = new ObjectInputStream(sockets[i].getInputStream());
+				if(input != null)
+					System.out.println("message recieved : " + (String)input.readObject());
+					// not sure if it will stuck here?????????????????????????????????????????????????????????????????????????
+					break;
+			}
+		}
+		//is slave
+		else{
+			 ObjectOutputStream output = null;
+			 output = new ObjectOutputStream(sockets[0].getOutputStream());
+			 output.writeObject("hello from slaves");
+			 System.out.println("hello sent!");
+		}
+		
+		
+		
+		//the initial population of size 6(numMachines * 3)
 		// to make paralleling work easier, make it size = number of machines * number of cores on each machine
 		
 		int population = numMachines * 3;

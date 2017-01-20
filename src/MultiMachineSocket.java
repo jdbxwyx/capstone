@@ -77,8 +77,9 @@ public class MultiMachineSocket {
 		System.out.println(" first port: " + port);
 	}
 	
-	public void connect() throws IOException{
+	public Socket[] connect() throws IOException{
 		System.out.println("My IP is: " + InetAddress.getLocalHost().toString());
+		Socket sockets[] = null;
 		// if this machine is master
     	if(masterAddr.equals(InetAddress.getByName("localhost")) || masterAddr.equals(InetAddress.getLocalHost())){
     		setId(-1);
@@ -87,21 +88,21 @@ public class MultiMachineSocket {
     		masterSockets = new ServerSocket[numSlaves];
     		for(int i = 0; i < numSlaves; i++){
     			masterSockets[i] = new ServerSocket(port + i);
-    			Socket sockets[] = new Socket[numSlaves];
+    			sockets = new Socket[numSlaves];
     			
     			while(true){
     				sockets[i] = masterSockets[i].accept();
-    				System.out.println("*****tag****");
+    				//System.out.println("*****tag****");
     				if(sockets[i] != null)
-    					break;
-    				
+    					break;	
     			}
     			System.out.println("connection estblished " + i);
-    			
     		}
+    		return sockets;
     	}
     	//else(is slave)
     	else{
+    		sockets = new Socket[1];
     		// find out which slave it is
     		for(int i = 0; i < numSlaves; i++){
     			if(slaveAddr[i].equals(InetAddress.getByName("localhost")) || slaveAddr[i].equals(InetAddress.getLocalHost())){
@@ -110,9 +111,10 @@ public class MultiMachineSocket {
     		}
     		System.out.println("I am slave " + id);
     		System.out.println("slave " + id + "will try to connect with master");
-    		System.out.println(InetAddress.getByName("localhost").toString() + "    " + (port + id));
-    		Socket socket = new Socket(masterAddr, port + id);//!!!!!!!!!!need to close!!!!!1!!!!
-    		
+    		//System.out.println(InetAddress.getByName("localhost").toString() + "    " + (port + id));
+    		Socket socket = new Socket(masterAddr, port + id);
+    		sockets[0] = socket;
+    		return sockets;
     	}
 	}
 	
