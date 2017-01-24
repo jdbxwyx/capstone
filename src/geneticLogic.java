@@ -13,7 +13,7 @@ public class geneticLogic {
 
 	private static int numMachines;
 	private static int machineId;
-	private static boolean finishedByOthers = false; // means one of the machines has finished the job
+	private static boolean finishedByOthers = false; // means one of the machines has finished the job, only make sense when on master machine
 	private static int[] msgFromOther = new int[2];
 	// this method must be thread safe
 	synchronized private static void setMsgFromOthers(int topics, int iterations){ 
@@ -107,14 +107,15 @@ public class geneticLogic {
 						 * Please find what would be a suitable fitness to classify the set of documents that you choose
 						 */
 						// if other machines has finished 
-						if(finishedByOthers){
-							
+						if(finishedByOthers){					
+							tm.LDA(msgFromOther[0],msgFromOther[1], true);
+							System.out.println("the best distribution is " + msgFromOther[0] + " topics and " + msgFromOther[1] + "iterations and fitness is " + maxFitness);
+							maxFitnessFound = true;
 							break;
 						}
 						// set fitness threshold here!!!
 						if(maxFitness > 0.75) {
 						// when maxFitness satisfies the requirement, stop running GA
-							// if this machine is master, just stop GA
 
 							// if this machine is slave, tell the master what the best combination is
 							if(machineId != -1){
@@ -127,6 +128,12 @@ public class geneticLogic {
 								System.out.println("message sent!");
 							 	System.out.println("topic: " + msg[0] + " interation: " + msg[1]);
 							}
+							// if this machine is master, stop all listener threads and  then stop GA
+//							else{
+//							for(int i = 0; i < numMachines - 1; i++){
+//								listeners[i].end();
+//								break;
+//							}
 							
 							//run the function again to get the words in each topic
 							//the third parameter states that the topics are to be written to a file
@@ -206,7 +213,7 @@ public class geneticLogic {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.out.println("message received from machine" + machineId + ": topic: " + msg[0] + " interations: " + msg[1]);
+				System.out.println("topic: " + msg[0] + " interations: " + msg[1]);
 				setMsgFromOthers(msg[0], msg[1]);
 			}
 		}
