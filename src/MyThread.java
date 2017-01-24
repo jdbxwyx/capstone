@@ -20,7 +20,7 @@ public class MyThread implements Runnable{
 	public MyThread(int count, int numMachines, int id, int[][] initialPopulation, TopicModelling tm, int numberOfDocuments, double[] fitnessValues){
 		MyCount = count;// count of thread on one machine
 		machineId = id;
-		globalCount = (numMachines) * machineId + MyCount;
+		globalCount = (numMachines) * (machineId + 1) + MyCount;
 		this.initialPopulation = initialPopulation;
 		this.tm = tm;
 		this.numberOfDocuments = numberOfDocuments;

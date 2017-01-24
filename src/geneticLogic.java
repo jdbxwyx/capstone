@@ -13,33 +13,28 @@ public class geneticLogic {
 
 	private static int numMachines;
 	private static int machineId;
+	private static boolean finishedByOthers = false; // means one of the machines has finished the job
+	private static int[] msgFromOther = new int[2];
+	// this method must be thread safe
+	synchronized private static void setMsgFromOthers(int topics, int iterations){ 
+		msgFromOther[0] = topics;
+		msgFromOther[1] = iterations;
+	}
 	//public static void main(String[] args) throws IOException, InterruptedException {
 	public static void geneticLogic(MultiMachineSocket mms) throws IOException, InterruptedException, ClassNotFoundException {
 		
 		Socket sockets[] = mms.connect();
 		numMachines = mms.getNumSlaves() + 1;
 		machineId = mms.getId();
-		
-		//test!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		//is master
+		Listener listeners[] = null;		
+		//if this machine is master, create threads to listen to the slaves
 		if(machineId == -1){
-			ObjectInputStream input = null;
+			listeners = new Listener[numMachines - 1];
 			for(int i = 0; i < numMachines - 1; i++){
-				input = new ObjectInputStream(sockets[i].getInputStream());
-				if(input != null)
-					System.out.println("message recieved : " + (String)input.readObject());
-					// not sure if it will stuck here?????????????????????????????????????????????????????????????????????????
-					break;
+				listeners[i] = new Listener(sockets, i);
+				listeners[i].start();
 			}
 		}
-		//is slave
-		else{
-			 ObjectOutputStream output = null;
-			 output = new ObjectOutputStream(sockets[0].getOutputStream());
-			 output.writeObject("hello from slaves");
-			 System.out.println("hello sent!");
-		}
-		
 		
 		
 		//the initial population of size 6(numMachines * 3)
@@ -101,20 +96,38 @@ public class geneticLogic {
 			int[][] newPopulation = new int[initialPopulation.length][2];
 			//copy only the top 1/3rd of the chromosomes to the new population 
 			for(int i = 0 ; i < (initialPopulation.length / 3) ; i++) {
-				System.out.println("time is" + System.currentTimeMillis());
 				double maxFitness = Integer.MIN_VALUE;
 				int maxFitnessChromosome = -1;
 				for(int j = 0 ; j < initialPopulation.length ; j++) {
 					if(fitnessValues[j] > maxFitness) {
 						maxFitness = fitnessValues[j];
 						
-						//stop reproducing or creating new generations if the expected fitness is reached
+						//stop reproducing or creating new generations if the expected fitness is reached by one of the machiens
 						/**
 						 * Please find what would be a suitable fitness to classify the set of documents that you choose
 						 */
-						
+						// if other machines has finished 
+						if(finishedByOthers){
+							
+							break;
+						}
 						// set fitness threshold here!!!
 						if(maxFitness > 0.75) {
+						// when maxFitness satisfies the requirement, stop running GA
+							// if this machine is master, just stop GA
+
+							// if this machine is slave, tell the master what the best combination is
+							if(machineId != -1){
+								ObjectOutputStream output = null;
+								output = new ObjectOutputStream(sockets[0].getOutputStream());
+								int[] msg = new int[2];
+								msg[0] = initialPopulation[j][0];
+								msg[1] = initialPopulation[j][1];
+								output.writeObject(msg);
+								System.out.println("message sent!");
+							 	System.out.println("topic: " + msg[0] + " interation: " + msg[1]);
+							}
+							
 							//run the function again to get the words in each topic
 							//the third parameter states that the topics are to be written to a file
 							tm.LDA(initialPopulation[j][0],initialPopulation[j][1], true);
@@ -163,6 +176,40 @@ public class geneticLogic {
 		}		
 		
 	}
-	
+	private static class Listener extends Thread{
+		private Socket sockets[];
+		private int listenerId;
+		public Listener(Socket s[], int i){
+			sockets = s;
+			listenerId = i;
+		}
+		
+		@Override
+        public void run( ){
+			ObjectInputStream input = null;
+			try {
+				input = new ObjectInputStream(sockets[listenerId].getInputStream());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(input != null){
+				finishedByOthers = true;
+				System.out.println("slave " + listenerId + " has finished the job");
+				int[] msg = new int[2];
+				try {
+					msg = (int[])input.readObject();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("message received from machine" + machineId + ": topic: " + msg[0] + " interations: " + msg[1]);
+				setMsgFromOthers(msg[0], msg[1]);
+			}
+		}
+	}
 }
 	
