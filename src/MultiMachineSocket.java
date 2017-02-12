@@ -117,15 +117,15 @@ public class MultiMachineSocket {
     		return sockets;
     	}
 	}
-	
-	// tell master one slave have finished the job
-	public void finishSignal(){
-		
-	}
-	
-	// send result back to master
-	public void sendResult(){
-		
-	}
-	
+//	
+//	// tell master one slave have finished the job
+//	public void finishSignal(){
+//		
+//	}
+//	
+//	// send result back to master
+//	public void sendResult(){
+//		
+//	}
+//	
 }

@@ -49,7 +49,6 @@ public class TopicModelling {
         int numTopics = numberOfTopics;
         ParallelTopicModel model = new ParallelTopicModel(numTopics,0.01, 0.01);
         
-        
         model.addInstances(instances);
 
         // Use two parallel samplers, which each look at one half the corpus and combine

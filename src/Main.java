@@ -350,7 +350,7 @@ public class Main {
 		
 		long endTime   = System.currentTimeMillis();
 		
-		long totalTime = endTime - startTime;
-		System.out.println("TOTAL TIME : " + totalTime + "ms");
+		long totalTime = endTime - preprocessEndTime;
+		System.out.println("execution time : " + totalTime + "ms");
 	}
 }
