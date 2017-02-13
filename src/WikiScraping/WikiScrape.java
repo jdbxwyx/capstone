@@ -192,7 +192,7 @@ public class WikiScrape {
 	
 	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
 		
-		WikiScrape ws = new WikiScrape( 6 );
+		WikiScrape ws = new WikiScrape( 50 );
 		ws.scrape();
 		ws.writeGroundTruth();
 		TextConversion.convertToTxt();
