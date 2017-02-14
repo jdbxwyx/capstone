@@ -40,7 +40,8 @@ public class geneticLogic {
 		//the initial population of size 6(numMachines * 3)
 		// to make paralleling work easier, make it size = number of machines * number of cores on each machine
 		
-		int population = numMachines * 3;
+		//int population = numMachines * 3;
+		int population = 8;
 		int[][] initialPopulation = new int[population][2];
 		
 		boolean maxFitnessFound = false;
@@ -58,7 +59,9 @@ public class geneticLogic {
 		    //initialPopulation[i][1] = 500;
 		}
 		
-		while( !maxFitnessFound) {
+		int iterationCount = 0;
+		while( !maxFitnessFound && iterationCount < 50) {
+			System.out.println("This is " + iterationCount +"iteration of GA");
 			
 			//to get the fitness values
 			double[] fitnessValues = new double[population];
@@ -74,8 +77,8 @@ public class geneticLogic {
 			
 			long startTime = System.currentTimeMillis();
 		
-			int coresNum = 4;
-			int newThreadsNum = 3;
+			int coresNum = 8;
+			int newThreadsNum = 8;
 			Thread threads[] = new Thread[newThreadsNum];
 			for(int i = 0; i < newThreadsNum; i++){
 				threads[i] = new Thread( new MyThread(i, numMachines, machineId, initialPopulation, tm, numberOfDocuments, fitnessValues));
@@ -171,6 +174,7 @@ public class geneticLogic {
 			//substitute the initial population with the new population and continue 
 			initialPopulation = newPopulation;
 			
+			iterationCount ++;
 			
 			long endTime = System.currentTimeMillis();
 			System.out.println("other part takes " + (endTime - paraEndTime) + "ms");
