@@ -41,7 +41,7 @@ public class geneticLogic {
 		// to make paralleling work easier, make it size = number of machines * number of cores on each machine
 		
 		//int population = numMachines * 3;
-		int population = 16;
+		int population = 18;
 		int[][] initialPopulation = new int[population][2];
 		
 		boolean maxFitnessFound = false;
@@ -78,7 +78,7 @@ public class geneticLogic {
 			long startTime = System.currentTimeMillis();
 		
 			int coresNum = 8;
-			int newThreadsNum = 8;
+			int newThreadsNum = 9;
 			Thread threads[] = new Thread[newThreadsNum];
 			for(int i = 0; i < newThreadsNum; i++){
 				threads[i] = new Thread( new MyThread(i, numMachines, machineId, initialPopulation, tm, numberOfDocuments, fitnessValues));
@@ -137,6 +137,7 @@ public class geneticLogic {
 //								listeners[i].end();
 //								break;
 //							}
+						// if max numberof iteration in GA reached
 						if(iterationCount == 49 && maxFitness <= 0.75){
 							System.out.println("Fitness threashhold not met, GA will be terminated because max iteration times has been reached!");
 							tm.LDA(initialPopulation[j][0],initialPopulation[j][1], true);
