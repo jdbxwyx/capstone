@@ -41,7 +41,7 @@ public class geneticLogic {
 		// to make paralleling work easier, make it size = number of machines * number of cores on each machine
 		
 		//int population = numMachines * 3;
-		int population = 8;
+		int population = 16;
 		int[][] initialPopulation = new int[population][2];
 		
 		boolean maxFitnessFound = false;
@@ -137,13 +137,13 @@ public class geneticLogic {
 //								listeners[i].end();
 //								break;
 //							}
-							
-							//run the function again to get the words in each topic
-							//the third parameter states that the topics are to be written to a file
+						if(iterationCount == 49 && maxFitness <= 0.75){
+							System.out.println("Fitness threashhold not met, GA will be terminated because max iteration times has been reached!");
 							tm.LDA(initialPopulation[j][0],initialPopulation[j][1], true);
 							System.out.println("the best distribution is " + initialPopulation[j][0] + " topics and " + initialPopulation[j][1] + "iterations and fitness is " + maxFitness);
 							maxFitnessFound = true;
-							break;						
+			}	
+												
 						}
 						maxFitnessChromosome = j;
 					}
@@ -156,10 +156,6 @@ public class geneticLogic {
 				//copy the chromosome with high fitness to the next generation
 				newPopulation[i] = initialPopulation[maxFitnessChromosome];
 				fitnessValues[maxFitnessChromosome] = Integer.MIN_VALUE;
-			}
-			
-			if(maxFitnessFound) {
-				break;
 			}
 		
 		
@@ -183,8 +179,9 @@ public class geneticLogic {
 			 * For some cases, we might expect a very high fitness that will never be reached.
 			 * In such cases add a variable to check how many times the GA loop is repeated.
 			 * Terminate the loop in predetermined number of iterations.
-			 */
-		}		
+			 */		
+		}
+
 		
 	}
 	private static class Listener extends Thread{

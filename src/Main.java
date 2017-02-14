@@ -311,7 +311,7 @@ public class Main {
 		
 		
 		long preprocessEndTime = System.currentTimeMillis();
-		System.out.println("Preprocessing takes " + (preprocessEndTime - startTime) + "ms");
+
 		
 		
 		//call the genetic logic function that calls the topic modelling
@@ -351,6 +351,7 @@ public class Main {
 		long endTime   = System.currentTimeMillis();
 		
 		long totalTime = endTime - preprocessEndTime;
+		System.out.println("Preprocessing takes " + (preprocessEndTime - startTime) + "ms");
 		System.out.println("execution time : " + totalTime + "ms");
 	}
 }
