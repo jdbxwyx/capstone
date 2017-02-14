@@ -94,7 +94,7 @@ public class geneticLogic {
 			System.out.println("parallel part takes " + (paraEndTime - startTime) + "ms");		
 		
 			//ranking and ordering the chromosomes based on the fitness function. 
-			//no sorting code found?(by Xiaolin)
+			//no sorting code found? only copy the best in this program(by Xiaolin)
 			//We need only the top 1/3rd of the chromosomes with high fitness values - Silhouette coefficient
 			int[][] newPopulation = new int[initialPopulation.length][2];
 			//copy only the top 1/3rd of the chromosomes to the new population 
@@ -138,17 +138,19 @@ public class geneticLogic {
 //								break;
 //							}
 						// if max numberof iteration in GA reached
-						if(iterationCount == 49 && maxFitness <= 0.75){
-							System.out.println("Fitness threashhold not met, GA will be terminated because max iteration times has been reached!");
-							tm.LDA(initialPopulation[j][0],initialPopulation[j][1], true);
-							System.out.println("the best distribution is " + initialPopulation[j][0] + " topics and " + initialPopulation[j][1] + "iterations and fitness is " + maxFitness);
-							maxFitnessFound = true;
-			}	
 												
 						}
 						maxFitnessChromosome = j;
 					}
 				}
+				
+				if(iterationCount == 49 && maxFitness <= 0.75){
+					System.out.println("Fitness threashhold not met, GA will be terminated because max iteration times has been reached!");
+					tm.LDA(initialPopulation[maxFitnessChromosome][0],initialPopulation[maxFitnessChromosome][1], true);
+					System.out.println("the best distribution is " + initialPopulation[maxFitnessChromosome][0] + " topics and " + initialPopulation[maxFitnessChromosome][1] + "iterations and fitness is " + maxFitness);
+					maxFitnessFound = true;
+				}	
+				
 				
 				if(maxFitnessFound) {
 					break;
